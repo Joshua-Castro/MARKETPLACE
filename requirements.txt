@@ -2,3 +2,4 @@ flask
 gunicorn
 pymysql
 Pillow
+mysql-connector-python
