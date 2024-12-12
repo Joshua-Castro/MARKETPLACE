@@ -24,7 +24,8 @@ cloudinary.config(
 )
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Required for session management
+# app.secret_key = 'your_secret_key'  # Required for session management
+app.secret_key = os.environ.get('SECRET_KEY', 'default_secret_key')
 
 
 # Set the upload folders for item grid and detail images
@@ -857,7 +858,3 @@ def update_users_table():
 # Call this function when your app starts
 # Add this near the bottom of your file, before the if __name__ == '__main__': line
 update_users_table()
-
-
-if __name__ == '__main__':
-    app.run(debug=True)  # Start the Flask application
