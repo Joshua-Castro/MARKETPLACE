@@ -3,3 +3,4 @@ gunicorn
 pymysql
 Pillow
 mysql-connector-python
+mysqlclient
