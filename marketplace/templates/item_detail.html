@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - CCCBuyNSell</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://kit.fontawesome.com/cb15c60a65.js" crossorigin="anonymous"></script>
+    <style>
+        
+
+    </style>
+</head>
+<body>
+<!-- Top Bar -->
+<div class="top-bar">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-auto contact-info">
+            </div>
+            <div class="col-auto">
+                <div class="dropdown">
+                    <a class="dropdown-toggle text-decoration-none text-white" href="#" id="dropdownMenuLink" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user fa-sm me-2"></i>My Account
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('user_info') }}"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="/post_item"><i class="fas fa-plus"></i> List an Item</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Header -->
+<header class="py-4" style="background-color: var(--dark-bg);">
+  <div class="container">
+      <div class="row align-items-center">
+          <div class="col-12 col-md-3">
+              <a href="{{ url_for('main_index') }}" class="logo" style="font-size: 1.8rem;">Calamba Trading Hub<span>.</span></a>
+          </div>
+          <div class="col-12 col-md-6">
+              <div class="search-bar">
+                <form action="{{ url_for('search') }}" method="get">
+                    <div class="input-group shadow-sm bg-white rounded-pill overflow-hidden">
+                        <input 
+                            type="text" 
+                            class="form-control border-0 shadow-none ps-3 py-2" 
+                            placeholder="Search item" 
+                            name="query" 
+                            aria-label="Search"
+                        >
+                        <button class="btn btn-danger d-flex align-items-center justify-content-center px-3 py-2 rounded-end-pill" type="submit">
+                            <i class="fas fa-search me-2"></i>
+                            <span>Search</span>
+                        </button>
+                    </div>
+                </form>
+              </div>
+          </div>
+          <div class="col-12 col-md-3">
+              <!-- Modified classes for responsive centering -->
+              <div class="header-icons d-flex justify-content-center justify-content-md-end">
+                <a href="{{ url_for('saved_items') }}" 
+                   class="btn btn-link position-relative me-3 text-white" 
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="bottom" 
+                   title="View Saved Items">
+                    <i class="fas fa-heart"></i>
+                </a>
+                               
+                <button class="btn btn-link menu-toggle d-md-none text-white">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+                           
+          </div>
+      </div>
+  </div>
+</header>
+
+<!-- Product Details -->
+<div class="product-detail-container">
+    <div class="product-content">
+        <!-- Left side: Image slideshow and description -->
+        <div>
+            <div class="slideshow-container">
+                <!-- Display only detail images -->
+                {% if item.detail_images %}
+                    {% for image in item.detail_images.split(',') %}
+                        <div class="mySlides">
+                            <img src="{{ image.strip() }}" alt="{{ item.name }}">
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="mySlides">
+                        <p class="text-center">No additional images available for this item.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Thumbnail navigation (optional) -->
+            <div class="thumbnail-nav mt-3 d-flex justify-content-center">
+                {% if item.detail_images %}
+                    {% for image in item.detail_images.split(',') %}
+                        <img src="{{ image.strip() }}" 
+                             onclick="currentSlide({{ loop.index0 }})" 
+                             class="thumbnail {% if loop.first %}active{% endif %}" 
+                             alt="thumbnail">
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <!-- Product Description -->
+            <div class="product-description mt-4">
+                <h3><strong>Product Description</strong></h3>
+                <p>{{ item.description | replace('\n', '<br>') | safe }}</p>
+            </div>
+        </div>
+
+        <!-- Right side: Product information -->
+        <div class="product-info">
+            <div class="product-header mb-2">
+                <h1 class="product-name">{{ item.name }}</h1>
+                <div class="product-price" style="color: #D10024 !important;">PHP {{ item.price }}</div>
+                <div class="product-condition">Condition: {{ item_quality }}</div>
+            </div>
+
+            <div class="seller-info">
+                <div class="d-flex align-items-center gap-3">
+                    {% if item.profile_picture %}
+                        <img src="{{ item.profile_picture }}" 
+                             alt="Seller Profile" 
+                             class="rounded-circle"
+                             style="width: 50px; height: 50px; object-fit: cover;">
+                    {% else %}
+                        <i class="fas fa-user-circle" style="font-size: 50px; color: #D10024;"></i>
+                    {% endif %}
+                    <div>
+                        <h3 class="mb-0">{{ item.username }}</h3>
+                    </div>
+                </div>
+            </div>
+
+            {% if session.get('user_id') %}
+            <div class="action-buttons d-flex flex-column gap-3 my-4">
+                <!-- Top row with Save and Buy buttons -->
+                <div class="d-flex gap-3">
+                    <!-- Save Item Form -->
+                    <div class="w-50">
+                        <form action="{{ url_for('save_item', item_id=item['id']) }}" method="post" class="save-item-form">
+                            <button type="submit" 
+                                    class="btn w-100 py-3 d-flex align-items-center justify-content-center gap-2 fw-semibold" 
+                                    id="save-item-{{ item['id'] }}" 
+                                    data-item-id="{{ item['id'] }}"
+                                    style="background-color: #1E1F29; color: white;">
+                                <i class="fas fa-heart"></i>
+                                Save Item
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <!-- Buy Now Button -->
+                    <div class="w-50">
+                        <button type="button" 
+                                class="btn w-100 py-3 d-flex align-items-center justify-content-center gap-2 fw-semibold"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#proofModal"
+                                onclick="setItemDetails('{{ item.name }}')"
+                                style="background-color: #D10024; color: white;">
+                            <i class="fas fa-shopping-cart"></i>
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Bottom row with reference type form -->
+                <form id="purchaseForm" action="/proceed_purchase/{{ item.id }}" method="post" class="w-100">
+                    <div class="input-group">
+                        <input type="text" 
+                               id="referenceType" 
+                               name="referenceType" 
+                               class="form-control form-control-lg" 
+                               placeholder="Enter Reference Type" 
+                               required>
+                        <button type="button" 
+                                id="checkStatusBtn" 
+                                class="btn btn-primary d-flex align-items-center gap-2 fw-semibold">
+                            <i class="fas fa-search"></i>
+                            Check Status
+                        </button>
+                    </div>
+                </form>
+                
+                <p id="statusDisplay" class="alert alert-info text-center mb-0" style="display: none;"></p>
+            </div>
+            
+            {% endif %}
+            <!-- Modal -->
+            <div class="modal fade" id="proofModal" tabindex="-1" aria-labelledby="proofModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form action="{{ url_for('submit_proof') }}" method="POST" enctype="multipart/form-data" id="submitProofForm">
+                        <!-- Hidden field for item_id -->
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                    
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="proofModalLabel">Submit Proof of Payment</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="sender_name" class="form-label">Sender Name</label>
+                                    <input type="text" class="form-control" id="sender_name" name="sender_name" required pattern="[A-Z][a-zA-Z\s]*" oninput="this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);" title="The name must start with a capital letter">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="sender_number" class="form-label">Sender Number</label>
+                                    <input type="number" class="form-control" id="sender_number" name="sender_number" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="reference_type" class="form-label">Reference Type</label>
+                                    <input type="text" class="form-control" id="reference_type" name="reference_type" required pattern="[A-Z0-9]*" oninput="this.value = this.value.toUpperCase();" title="Only uppercase letters and numbers are allowed">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="item_name" class="form-label">Item Name</label>
+                                    <textarea class="form-control" id="item_name" name="item_name" rows="3" readonly>{{ item.name }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="screenshot" class="form-label">Upload Screenshot</label>
+                                    <input type="file" class="form-control" id="screenshot" name="screenshot" accept="image/*" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" 
+                                        class="btn d-flex align-items-center justify-content-center gap-2 fw-semibold" 
+                                        data-bs-dismiss="modal"
+                                        style="background-color: #1E1F29 !important; color: white;">
+                                    <i class="fas fa-times"></i>
+                                    Cancel
+                                </button>
+                                <button type="submit" 
+                                        class="btn d-flex align-items-center justify-content-center gap-2 fw-semibold"
+                                        style="background-color: #D10024 !important; color: white;">
+                                    <i class="fas fa-check"></i>
+                                    Submit Proof
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        
+            <div class="contact-section">
+                <div class="meet-up">
+                    <h5 class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>Meet-up Location</h5>
+                    <p class="mb-0" style="font-size: 1.2rem;">{{ item.meetup_place }}</p>
+                </div>
+                <div class="contact-seller">
+                    <h5 class="mb-2"><i class="fas fa-phone me-2"></i>Contact Seller</h5>
+                    <p class="mb-0" style="font-size: 1.2rem;">{{ item.seller_phone }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Handle Save Item Form
+    const saveButtons = document.querySelectorAll(".save-item-form");
+    saveButtons.forEach(form => {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const itemId = form.querySelector("button").getAttribute("data-item-id");
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Do you want to save this item?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#D10024",
+                cancelButtonColor: "##1E1F29",
+                confirmButtonText: "Yes, save it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/save_item/${itemId}`, { method: "POST" })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === "success") {
+                                Swal.fire("Saved!", data.message, "success");
+                            } else {
+                                Swal.fire("Oops!", data.message, "error");
+                            }
+                        })
+                        .catch(() => Swal.fire("Error", "There was an issue saving the item.", "error"));
+                }
+            });
+        });
+    });
+
+    // Handle Add to Cart Form
+    const cartButtons = document.querySelectorAll(".add-to-cart-form");
+    cartButtons.forEach(form => {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const itemId = form.querySelector("button").getAttribute("data-item-id");
+
+            Swal.fire({
+                title: "Add to Cart?",
+                text: "Are you sure you want to add this item to your cart?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, add it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/add_to_cart/${itemId}`, { method: "POST" })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === "success") {
+                                Swal.fire("Added!", data.message, "success");
+                            } else {
+                                Swal.fire("Oops!", data.message, "error");
+                            }
+                        })
+                        .catch(() => Swal.fire("Error", "There was an issue adding the item to your cart.", "error"));
+                }
+            });
+        });
+    });
+});
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let slideIndex = 0;
+    showSlides(slideIndex);
+
+    function showSlides(n) {
+        let slides = document.getElementsByClassName('mySlides');
+        let thumbnails = document.getElementsByClassName('thumbnail');
+        
+        if (n >= slides.length) slideIndex = 0;
+        if (n < 0) slideIndex = slides.length - 1;
+        
+        // Hide all slides
+        for (let i = 0; i < slides.length; i++) {
+            slides[i].style.display = 'none';
+            thumbnails[i].classList.remove('active');
+        }
+        
+        // Show current slide and activate thumbnail
+        slides[slideIndex].style.display = 'block';
+        thumbnails[slideIndex].classList.add('active');
+    }
+
+    function currentSlide(n) {
+        slideIndex = n;
+        showSlides(slideIndex);
+    }
+</script>
+<script>
+    document.getElementById('checkStatusBtn').addEventListener('click', async () => {
+        const referenceType = document.getElementById('referenceType').value;
+    
+        if (!referenceType) {
+            alert("Please enter a reference type.");
+            return;
+        }
+    
+        try {
+            const response = await fetch(`/check_status?referenceType=${referenceType}`);
+            const data = await response.json();
+    
+            if (data.status) {
+                document.getElementById('statusDisplay').textContent = `Status: ${data.status}`;
+    
+                if (data.status === "Confirmed") {
+                    // Enable the form submission button
+                    const form = document.getElementById('purchaseForm');
+                    form.submit(); // Proceed to purchase
+                } else {
+                    alert(`Cannot proceed. The status is: ${data.status}`);
+                }
+            } else {
+                document.getElementById('statusDisplay').textContent = "Reference not found.";
+            }
+        } catch (error) {
+            console.error("Error fetching status:", error);
+            document.getElementById('statusDisplay').textContent = "An error occurred. Please try again.";
+        }
+    });
+    </script>
+    <script>
+        // Trigger SweetAlert if there's a flash message
+        document.addEventListener("DOMContentLoaded", function() {
+            const flashMessage = "{{ get_flashed_messages()|safe }}";
+            if (flashMessage.includes("success")) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Proof of payment has been successfully submitted.',
+                    confirmButtonText: 'OK'
+                });
+            } else if (flashMessage.includes("danger")) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: flashMessage,
+                    confirmButtonText: 'Try Again'
+                });
+            }
+        });
+    </script>
+    <script>
+        // Menu Toggle Functionality
+        const menuToggle = document.querySelector('.menu-toggle');
+        const slideMenu = document.querySelector('.slide-menu');
+        const menuOverlay = document.querySelector('.menu-overlay');
+        const menuClose = document.querySelector('.menu-close');
+
+        function toggleMenu() {
+            slideMenu.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            document.body.style.overflow = slideMenu.classList.contains('active') ? 'hidden' : '';
+        }
+
+        menuToggle.addEventListener('click', toggleMenu);
+        menuClose.addEventListener('click', toggleMenu);
+        menuOverlay.addEventListener('click', toggleMenu);
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+</body>
+</html>

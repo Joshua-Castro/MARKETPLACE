@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCC BuyNSell</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <script src="https://kit.fontawesome.com/cb15c60a65.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <div>
+                <img src="/static/images/logo.png" width="45px">
+            </div>
+        </div>
+    </header>
+    <div class="main-container">
+        <div class="homepage-text-container">
+            <div class="content">
+                <h1>Welcome to Calamba Trading Hub</h1>
+                <p>Discover, Buy, and Sell</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="form-box" id="loginForm">
+                <div class="site-name-box"></div>
+                <h2>LOGIN</h2>
+                <form action="{{ url_for('login') }}" method="post">
+                    <div class="input-group">
+                        <label for="email"><i class="fas fa-envelope"></i></label>
+                        <input type="email" id="email" name="email" placeholder="Email" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password"><i class="fas fa-lock"></i></label>
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit">LOGIN</button>
+                </form>
+                <p>Don't have an account? <a href="#" onclick="showRegisterForm()">Register here</a></p>
+            </div>
+            <div class="form-box" id="registerForm" style="display: none;">
+                <div class="site-name-box"></div>
+                <h2>REGISTER</h2>
+                <form action="{{ url_for('register') }}" method="POST" onsubmit="return validateForm()">
+                    <div class="input-group">
+                        <label for="first_name"><i class="fas fa-user"></i></label>
+                        <input type="text" id="first_name" name="first_name" placeholder="First Name" pattern="[A-Za-z ]+" title="Only letters and spaces allowed" required>
+                        <div class="popup">Please enter your first name (letters only)</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="last_name"><i class="fas fa-user"></i></label>
+                        <input type="text" id="last_name" name="last_name" placeholder="Last Name" pattern="[A-Za-z ]+" title="Only letters and spaces allowed" required>
+                        <div class="popup">Please enter your last name (letters only)</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="username"><i class="fas fa-user"></i></label>
+                        <input type="text" id="username" name="username" placeholder="Username" title="Username must be 3-20 characters long" required>
+                        <div class="popup">Choose a username (3-20 characters, letters, numbers, and underscores only)</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="email"><i class="fas fa-envelope"></i></label>
+                        <input type="email" id="email" name="email" placeholder="Email" required>
+                        <div class="popup">Enter a valid email address</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg_password"><i class="fas fa-lock"></i></label>
+                        <input type="password" id="reg_password" name="password" placeholder="Password" minlength="8" required>
+                        <div class="popup">Password must contain at least 8 characters, including uppercase, lowercase, numbers, and special characters</div>
+                        <div id="password-strength" class="strength-meter"></div>
+                    </div>
+                    <div class="input-group">
+                        <label for="reg_confirm_password"><i class="fas fa-lock"></i></label>
+                        <input type="password" id="reg_confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+                        <div class="popup">Re-enter your password to confirm</div>
+                        <span id="password-match"></span>
+                    </div>
+                    <button type="submit">REGISTER</button>
+                </form>
+                <p>Already have an account? <a href="#" onclick="showLoginForm()">Login here</a></p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>2024 Calamba Trading Hub. All Rights Reserved.</p>
+    </footer>
+    <script>
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        }
+
+        function validateForm() {
+            const password = document.getElementById('reg_password').value;
+            const confirmPassword = document.getElementById('reg_confirm_password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return false;
+            }
+
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+            if (!(hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar)) {
+                alert('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character');
+                return false;
+            }
+
+            return true;
+        }
+
+        document.getElementById('reg_password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthMeter = document.getElementById('password-strength');
+            let strength = 0;
+
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+
+            const strengthText = ['Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+            strengthMeter.textContent = strengthText[strength - 1] || '';
+            strengthMeter.className = 'strength-meter strength-' + strength;
+        });
+
+        document.getElementById('reg_confirm_password').addEventListener('input', function() {
+            const password = document.getElementById('reg_password').value;
+            const matchDisplay = document.getElementById('password-match');
+
+            if (this.value === password) {
+                matchDisplay.textContent = 'Passwords match!';
+                matchDisplay.style.color = 'green';
+            } else {
+                matchDisplay.textContent = 'Passwords do not match';
+                matchDisplay.style.color = 'red';
+            }
+        });
+
+        const inputs = document.querySelectorAll('.input-group input');
+
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                document.querySelectorAll('.popup').forEach(popup => {
+                    popup.classList.remove('show');
+                });
+
+                const popup = this.nextElementSibling;
+                popup.classList.add('show');
+            });
+
+            input.addEventListener('blur', function() {
+                const popup = this.nextElementSibling;
+                if (!this.value) {
+                    popup.textContent = `Please enter your ${this.placeholder.toLowerCase()}`;
+                }
+            });
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.input-group')) {
+                document.querySelectorAll('.popup').forEach(popup => {
+                    popup.classList.remove('show');
+                });
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

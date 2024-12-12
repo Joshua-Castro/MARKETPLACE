@@ -1,0 +1,352 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color:  #15161D;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+/* Header */
+header {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #1E1F29;
+}
+
+nav {
+  text-align: right;
+}
+
+/* Parent container for both elements */
+.main-container {
+  display: flex;
+  justify-content: space-between; /* Space between the two containers */
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Left side - Text container */
+.homepage-text-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 50%; /* Adjust width if necessary */
+  padding: 0 50px;
+  color: #ffffff;
+}
+
+/* Right side - Form container */
+.container {
+  display: flex;
+  justify-content: flex-end; /* Align to the right */
+  align-items: center;
+  flex-direction: column;
+  width: 50%; /* Adjust width if necessary */
+  padding: 0 50px;
+}
+
+.form-box {
+  background-color: #f8f9fa;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 350px;
+  margin: 20px; 
+  box-sizing: border-box;
+}
+
+.site-name-box {
+  background-color:#1E1F29;
+  color: white; /* Text color */
+  padding: 10px;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 20px; 
+}
+
+.site-name-box h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.form-box h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-size: 24px;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px; 
+  background-color: white; 
+}
+
+.input-group label {
+  margin-right: 10px;
+  color: #2c3e50;
+  padding: 10px;
+  background-color: #e9ecef; 
+  border-top-left-radius: 4px; 
+  border-bottom-left-radius: 4px; 
+  border-right: 1px solid #ccc; 
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-top-right-radius: 4px; 
+  border-bottom-right-radius: 4px;
+  outline: none;
+   box-sizing: border-box;
+}
+
+.input-group input:focus {
+  border-color: #1E1F29;
+}
+
+/* Highlight invalid fields with a red border and exclamation icon */
+.is-invalid {
+  border-color: red;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  display: none;
+  margin-bottom: 5px;
+  text-align: left;
+  position: absolute;
+  top: -20px;  /* Adjust the distance above the label */
+  left: 0;
+}
+
+.input-group {
+  position: relative; /* Required for absolute positioning of error message */
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.input-group label {
+  display: block;
+  margin-top: 5px;
+}
+
+.invalid-feedback {
+  color: red;
+  font-size: 0.875rem;
+}
+
+.invalid-feedback i {
+  color: red;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #D10024;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #7a0014;
+}
+
+.register-link {
+  display: block;
+  margin-top: 10px;
+  color: #D10024;
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
+.back-button {
+  display: block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+  text-decoration: none;
+}
+
+.back-button:hover {
+  background-color: #e0e0e0;
+}
+
+.content {
+  max-width: 50%;
+}
+
+.content h1 {
+  font-size: 4em;
+  margin: 0 0 20px;
+  white-space: nowrap;
+}
+
+.content p {
+  font-size: 40px;
+  margin: 10px 0;
+}
+
+/* Container that holds both forms */
+.form-container {
+  position: relative;
+  width: 400px;
+  height: 500px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+/* Form boxes will be placed side by side */
+.form-boxes {
+  display: flex;
+  width: 800px;  /* Twice the width to accommodate both forms */
+  transition: transform 0.5s ease-in-out;  /* Smooth slide effect */
+}
+
+/* Styling for individual form boxes */
+.form-box {
+  width: 400px;
+  padding: 30px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+}
+
+/* Align form container vertically and horizontally */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Styling for buttons at the bottom */
+.toggle-buttons {
+  margin-top: 20px;
+}
+
+.toggle-buttons button {
+  background-color: #D10024;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-buttons button:hover {
+  background-color: #750014;
+}
+
+.strength-meter {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .strength-1 { color: red; }
+        .strength-2 { color: orange; }
+        .strength-3 { color: yellow; }
+        .strength-4 { color: lightgreen; }
+        .strength-5 { color: green; }
+        
+        #password-match {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .input-group {
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    .popup {
+        display: none;
+        position: absolute;
+        background-color: #333;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        width: max-content;
+        max-width: 250px;
+        top: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        text-align: center;
+    }
+
+    .popup::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 5px;
+        border-style: solid;
+        border-color: #333 transparent transparent transparent;
+    }
+
+    /* Animation for popup */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .popup.show {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+
+footer {
+  background-color: #1E1F29;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  width: 100%; /* Make the footer span the entire width of the page */
+  bottom: 0; /* Make sure it's positioned at the bottom */
+}
+
+footer p {
+  margin: 0; /* Remove default margin */
+  font-size: 14px; /* Adjust font size as needed */
+}

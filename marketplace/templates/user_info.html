@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - CCCBuyNSell</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/cb15c60a65.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="container">
+      <div class="row justify-content-between">
+          <div class="col-auto contact-info">
+          </div>
+          <div class="col-auto">
+              <div class="dropdown">
+                  <a class="dropdown-toggle text-decoration-none text-white" href="#" id="dropdownMenuLink" role="button" data-bs-toggle="dropdown">
+                      <i class="fas fa-user fa-sm me-2"></i>My Account
+                  </a>
+                  <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="{{ url_for('user_info') }}"><i class="fas fa-user"></i> Profile</a></li>
+                      <li><a class="dropdown-item" href="/post_item"><i class="fas fa-plus"></i> List an Item</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="py-4" style="background-color: var(--dark-bg);">
+<div class="container">
+    <div class="row align-items-center">
+        <div class="col-12 col-md-3">
+            <a href="{{ url_for('main_index') }}" class="logo" style="font-size: 1.8rem;">Calamba Trading Hub<span>.</span></a>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="search-bar">
+              <form action="{{ url_for('search') }}" method="get">
+                  <div class="input-group shadow-sm bg-white rounded-pill overflow-hidden">
+                      <input 
+                          type="text" 
+                          class="form-control border-0 shadow-none ps-3 py-2" 
+                          placeholder="Search item" 
+                          name="query" 
+                          aria-label="Search"
+                      >
+                      <button class="btn btn-danger d-flex align-items-center justify-content-center px-3 py-2 rounded-end-pill" type="submit">
+                          <i class="fas fa-search me-2"></i>
+                          <span>Search</span>
+                      </button>
+                  </div>
+              </form>
+            </div>
+        </div>
+        <div class="col-12 col-md-3">
+            <!-- Modified classes for responsive centering -->
+            <div class="header-icons d-flex justify-content-center justify-content-md-end">
+              <a href="{{ url_for('saved_items') }}" 
+                 class="btn btn-link position-relative me-3 text-white" 
+                 data-bs-toggle="tooltip" 
+                 data-bs-placement="bottom" 
+                 title="View Saved Items">
+                  <i class="fas fa-heart"></i>
+              </a>
+          </div>
+                         
+        </div>
+    </div>
+</div>
+</header>
+
+<div class="container my-5">
+  <!-- User Information Section -->
+  <div class="row mb-5">
+    <div class="col-md-4">
+        <div class="profile-header text-center">
+            <!-- Debug: Print the profile picture URL -->
+            <!-- {{ user.profile_picture }} -->
+            
+            <!-- Profile Picture Display -->
+            {% if user and user.profile_picture %}
+                <img src="{{ user.profile_picture }}" 
+                     class="rounded-circle profile-image mb-3" 
+                     style="width: 250px; height: 250px; object-fit: cover; border: 3px solid #D10024;" 
+                     alt="Profile Picture"
+                     onerror="this.onerror=null; this.src='https://via.placeholder.com/250';">
+            {% else %}
+                <i class="fas fa-user-circle profile-icon" style="font-size: 200px; color: #D10024;"></i>
+            {% endif %}
+            
+            <!-- Upload Profile Picture Button -->
+            <div class="mt-3">
+                <form id="profilePictureForm" enctype="multipart/form-data">
+                    <label for="profile_picture" class="btn" style="background-color: #D10024; color: white;">
+                        <i class="fas fa-camera"></i> Change Profile Picture
+                    </label>
+                    <input type="file" 
+                           id="profile_picture" 
+                           name="profile_picture" 
+                           style="display: none;" 
+                           accept="image/*"
+                           onchange="submitProfilePicture()">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <form method="POST" class="profile-form" enctype="multipart/form-data">
+          
+          <h1 class="mt-3">User Information</h1>
+            <!-- Display First Name -->
+            <div class="form-group mb-3">
+                <label for="first_name">First Name:</label>
+                <input type="text" id="first_name" name="first_name" class="form-control" value="{{ user['first_name'] }}" required>
+            </div>
+
+            <!-- Display Last Name -->
+            <div class="form-group mb-3">
+                <label for="last_name">Last Name:</label>
+                <input type="text" id="last_name" name="last_name" class="form-control" value="{{ user['last_name'] }}" required>
+            </div>
+
+            <!-- Display Username -->
+            <div class="form-group mb-3">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="form-control" value="{{ user['username'] }}" required>
+            </div>
+
+            <!-- Display Email -->
+            <div class="form-group mb-3">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" value="{{ user['email'] }}" required>
+            </div>  
+
+            <div class="d-flex justify-content-end mt-3">
+                <button type="submit" class="btn btn-primary" style="margin-right: 10px; background-color: #D10024;">Update Information</button>
+                <a href="{{ url_for('main_index') }}" class="btn btn-secondary ml-2">Back</a>
+          </div>
+        </form>
+    </div>
+</div>
+
+  <!-- Listed Items Section -->
+  <div id="itemList">
+    <h2>Your Listed Items</h2>
+    {% if posted_items %}
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for item in posted_items %}
+          <div class="col">
+            <div class="card shadow-sm">
+              <a href="{{ url_for('item_detail', item_id=item.id) }}" class="text-decoration-none">
+                <img src="{{ item.grid_image }}" class="card-img-top" alt="{{ item.name }}" 
+                     style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                  <h5 class="card-title">{{ item.name }}</h5>
+                  <p class="card-text">₱{{ item.price }}</p>
+                </div>
+              </a>
+              <div class="card-footer d-flex justify-content-between">
+                <form action="{{ url_for('delete_item', item_id=item.id) }}" method="post" style="display:inline;">
+                  <button type="submit" class="btn btn-danger btn-sm">Mark as Sold</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-muted">You have not posted any items yet.</p>
+    {% endif %}
+  </div>
+</div>
+</div>
+
+
+    
+
+  <!-- Bootstrap JS and Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <script>
+  function submitProfilePicture() {
+      const fileInput = document.getElementById('profile_picture');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('profile_picture', file);
+
+      // Show loading state
+      const label = fileInput.previousElementSibling;
+      const originalText = label.innerHTML;
+      label.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+      fetch('/update_profile_picture', {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              // Update the profile picture immediately without reloading
+              const profileImg = document.querySelector('.profile-image');
+              if (profileImg) {
+                  profileImg.src = data.profile_picture_url;
+              } else {
+                  // If no image exists yet, reload the page
+                  location.reload();
+              }
+              label.innerHTML = '<i class="fas fa-check"></i> Upload Successful';
+              setTimeout(() => {
+                  label.innerHTML = originalText;
+              }, 2000);
+          } else {
+              throw new Error(data.error || 'Upload failed');
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          label.innerHTML = '<i class="fas fa-times"></i> Upload Failed';
+          setTimeout(() => {
+              label.innerHTML = originalText;
+          }, 2000);
+      });
+  }
+  </script>
+</body>
+</html>
