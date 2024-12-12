@@ -6,3 +6,4 @@ mysql-connector-python
 mysqlclient
 Flask-Login
 python-dotenv
+cloudinary
